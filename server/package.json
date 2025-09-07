@@ -1,0 +1,28 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "npm run build && node -r module-alias/register dist/main.js",
+    "dev": "ts-node -r tsconfig-paths/register src/main.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/express": "^5.0.3",
+    "@types/matter-js": "^0.20.0",
+    "@types/node": "^24.3.0",
+    "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5.9.2"
+  },
+  "dependencies": {
+    "express": "^5.1.0",
+    "matter-js": "^0.20.0",
+    "module-alias": "^2.2.3",
+    "socket.io": "^4.8.1"
+  },
+  "description": ""
+}

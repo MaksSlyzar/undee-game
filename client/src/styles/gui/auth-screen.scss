@@ -1,0 +1,64 @@
+#auth-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: center;
+  min-width: 320px;
+  padding: 2rem 2.5rem;
+  border-radius: 14px;
+
+  /* напівпрозорий блок із неоновою тінню */
+  background: rgba(0, 0, 0, 0.6);
+  box-shadow:
+    0 0 15px rgba(0, 255, 200, 0.4),
+    0 0 30px rgba(0, 255, 200, 0.3);
+
+  backdrop-filter: blur(6px);
+
+  input {
+    padding: 14px 18px;
+    font-size: 18px;
+    border: 2px solid rgba(0, 255, 200, 0.4);
+    border-radius: 10px;
+    margin-bottom: 16px;
+    background-color: rgba(20, 20, 20, 0.7);
+    color: #fff;
+    transition: border-color 0.25s, box-shadow 0.25s;
+
+    &:focus {
+      outline: none;
+      border-color: #0ff;
+      box-shadow: 0 0 8px #0ff;
+    }
+
+    &::placeholder {
+      color: #aaa;
+    }
+  }
+
+  button {
+    padding: 14px;
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    border: none;
+    border-radius: 10px;
+    background: linear-gradient(90deg, #06f, #0ff);
+    color: #fff;
+    cursor: pointer;
+    box-shadow: 0 0 12px #0ff, 0 0 24px #06f;
+    transition: transform 0.1s ease, box-shadow 0.25s ease;
+
+    &:hover {
+      box-shadow: 0 0 18px #0ff, 0 0 36px #06f;
+      transform: scale(1.03);
+    }
+
+    &:active {
+      transform: scale(0.96);
+      box-shadow: 0 0 8px #0ff;
+    }
+  }
+}
+

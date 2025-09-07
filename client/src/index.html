@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Undee Game</title>
+  <link rel="stylesheet" href="./styles/styles.scss">
+</head>
+<body>
+  <div class="main">
+    <div id="auth-screen">
+      <input type="text" id="nickname" placeholder="Enter your nickname" />
+      <button id="login-btn">Login</button>
+    </div>
+
+    <div id="loading-screen">Loading...</div>
+    
+    <div id="enter-screen">
+      <button id="enter-game-btn">Enter the game</button>
+    </div>
+
+    <div id="game-screen">
+      <canvas id="game-canvas"></canvas>
+    </div>
+  </div>
+  <script type="module" src="./main.ts"></script>
+</body>
+</html>
+

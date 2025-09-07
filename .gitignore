@@ -1,0 +1,29 @@
+# Node modules
+/server/node_modules/
+/client/node_modules/
+
+# Build output
+/server/dist/
+/client/dist/
+
+# Logs
+npm-debug.log
+yarn-error.log
+pnpm-debug.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# Package lock
+/server/package-lock.json
+/client/package-lock.json
+
