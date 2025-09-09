@@ -10,6 +10,7 @@ class GameCycle {
 
   constructor() {
     this.engine = Matter.Engine.create();
+    this.engine.gravity.y = 0;
     this.start();
   }
 

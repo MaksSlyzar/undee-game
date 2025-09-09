@@ -9,6 +9,9 @@ export class PlayerUI extends Container {
   private _hp: number;
   private _nickname: string;
 
+  private target?: Container;
+  private offsetY: number = -30;
+
   constructor(nickname: string, hp: number, maxHp: number) {
     super();
 
@@ -16,25 +19,22 @@ export class PlayerUI extends Container {
     this._hp = hp;
     this._maxHp = maxHp;
 
-    // Nickname text
     this.nicknameText = new Text(this._nickname, {
       fontFamily: "Arial",
       fontSize: 16,
       fill: 0xffffff,
       stroke: 0x000000,
     });
-    this.nicknameText.anchor.set(0.5, 1); // center align, bottom
-    this.nicknameText.y = -10; // position above player
+    this.nicknameText.anchor.set(0.5, 1);
+    this.nicknameText.y = -10;
     this.addChild(this.nicknameText);
 
-    // HP bar background
     this.hpBarBackground = new Graphics();
     this.hpBarBackground.beginFill(0x444444);
     this.hpBarBackground.drawRect(-25, 0, 50, 6);
     this.hpBarBackground.endFill();
     this.addChild(this.hpBarBackground);
 
-    // HP bar fill
     this.hpBarFill = new Graphics();
     this.addChild(this.hpBarFill);
 
@@ -57,6 +57,17 @@ export class PlayerUI extends Container {
     this.hpBarFill.beginFill(0xff0000);
     this.hpBarFill.drawRect(-25, 0, 50 * ratio, 6);
     this.hpBarFill.endFill();
+  }
+
+  follow(target: Container, offsetY: number = -30) {
+    this.target = target;
+    this.offsetY = offsetY;
+  }
+
+  update() {
+    if (!this.target) return;
+
+    this.position.set(this.target.x, this.target.y + this.offsetY);
   }
 }
 

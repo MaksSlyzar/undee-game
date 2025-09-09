@@ -47,6 +47,26 @@ export default class ClusterManager {
     return Object.values(this.clusters);
   }
 
+  getPlayerById(playerId: string): Player | undefined {
+    for (const cluster of Object.values(this.clusters)) {
+      if (cluster.players[playerId]) {
+        return cluster.players[playerId];
+      }
+    }
+    return undefined;
+  }
+
+  getPlayerBySocketId(socketId: string): Player | undefined {
+    for (const cluster of Object.values(this.clusters)) {
+      for (const player of Object.values(cluster.players)) {
+        if (player.socket?.id === socketId) {
+          return player;
+        }
+      }
+    }
+    return undefined;
+  }
+
   update(delta: number): void {
     for (let clusterid in this.clusters) {
       this.clusters[clusterid].update(delta);

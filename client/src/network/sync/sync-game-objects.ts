@@ -1,6 +1,7 @@
 import GameObject from "@core/game-object";
 import PlayerEntity from "@game/game-objects/objects/player-entity";
 import GameCycle from "@game/managers/main/GameCycle";
+import NetworkManager from "@network/managers/NetworkManager";
 import { GameObjectNetworkRecv, PlayerEntityNetworkRecv } from "@network/types/game/game-object";
 
 export function syncGameObjects(data: GameObjectNetworkRecv[]) {
@@ -26,7 +27,12 @@ function syncPlayerEntity(data: PlayerEntityNetworkRecv) {
   if (entity == null) {
     entity = new PlayerEntity(data.id, data.position.x, data.position.y);
     GameCycle.entities[data.id] = entity;
-    GameCycle.pixiApplication?.stage.addChild(entity);
+    GameCycle.gameContainer.addChild(entity);
+    console.log(data.id, NetworkManager.gameEventsController?.playerId)
+    if (data.id == NetworkManager.gameEventsController?.playerId) {
+      GameCycle.camera?.follow(entity);
+      console.log("follow")
+    }
   }
 
   entity.updateNetworkRecv(data);

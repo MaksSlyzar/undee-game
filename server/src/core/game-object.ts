@@ -1,4 +1,5 @@
 import Matter from "matter-js";
+import Cluster from "./cluster";
 
 export default abstract class GameObject<NwType> {
   public id: string;
@@ -8,7 +9,7 @@ export default abstract class GameObject<NwType> {
     this.id = id;
   }
 
-  abstract start(): void;
+  abstract start(cluster: Cluster): void;
 
   abstract update(delta: number): void;
 

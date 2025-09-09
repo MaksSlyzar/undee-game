@@ -21,17 +21,20 @@ export default class Cluster {
   addPlayer(player: Player) {
     const entity = new PlayerEntity(player);
     this.entities[entity.id] = entity;
+    player.playerEntity = entity;
     NetworkManager.gameEventsController?.init(player.socket, this.initNetwork(player));
+    entity.start(this);
   }
 
   initNetwork(player: Player): InitNetworkEmi {
+    const playerEntityId = player.playerEntity?.id;
     return {
       cluster: {
         entities: [],
         id: this.id,
         map: null
       },
-      playerId: player.id
+      playerId: playerEntityId ? playerEntityId : "0000"
     }
   }
 

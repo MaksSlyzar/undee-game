@@ -3,7 +3,11 @@ import { GameObjectNetworkEmi } from "./game-object";
 
 export interface PlayerNetworkEmi extends GameObjectNetworkEmi {
   name: string;
-  type: "player-entity"
+  type: "player-entity";
+  hp: number;
+  hpMax: number;
+  angle: number;
+  activity: "move" | "attack" | "idle"
 };
 
 

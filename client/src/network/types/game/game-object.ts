@@ -10,7 +10,11 @@ export interface GameObjectNetworkRecv {
 
 export interface PlayerEntityNetworkRecv extends GameObjectNetworkRecv {
   name: string,
-  type: "player-entity"
+  type: "player-entity",
+  hp: number,
+  hpMax: number,
+  angle: number,
+  activity: "move" | "idle" | "attack",
 };
 
 export type GameObjectBaseNetwork = PlayerEntityNetworkRecv;
