@@ -34,5 +34,5 @@ Folder for basic classes and utilities used throughout the server, such as `Game
 ## Directory Naming Convention
 - All folders use lowercase and kebab-case, for example:  
 
-## Main physic engine Matter.js
+## Main physics engine Matter.js
 <a href="https://brm.io/matter-js/">Matter js documentation</a>

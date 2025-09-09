@@ -12,7 +12,6 @@ class PlayerEntity extends GameObject<PlayerUpdateNetworkEmi> {
   }
 
   update(delta: number): void {
-
   }
 
   start(): void {
@@ -23,7 +22,8 @@ class PlayerEntity extends GameObject<PlayerUpdateNetworkEmi> {
     return {
       id: this.id,
       name: "undefined",
-      position: { x: 0, y: 0 }
+      position: { x: 100, y: 200 },
+      type: "player-entity"
     }
   }
 }

@@ -1,9 +1,13 @@
 import AuthController from "@network/controllers/AuthController";
+import GameEventsController from "@network/controllers/GameEventsController";
+import GameStatusController from "@network/controllers/GameStatusController";
 import io, { Socket } from "socket.io-client";
 
 class NetworkManager {
   private socket: Socket;
   authController: AuthController | null = null;
+  gameStatusController: GameStatusController | null = null;
+  gameEventsController: GameEventsController | null = null;
 
   constructor(serverUrl: string) {
     this.socket = io(serverUrl);
@@ -12,6 +16,8 @@ class NetworkManager {
     this.socket.on("connect", () => {
       console.log("connected to server", this.socket.id);
       this.authController = new AuthController();
+      this.gameStatusController = new GameStatusController();
+      this.gameEventsController = new GameEventsController();
     });
 
     this.socket.on("disconnect", () => {

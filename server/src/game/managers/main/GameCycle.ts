@@ -1,23 +1,16 @@
 import Matter from "matter-js";
 import Cluster from "@core/cluster";
+import ClusterManager from "../cluster/ClusterManager";
 
-export default class GameCycle {
+class GameCycle {
   private engine: Matter.Engine;
-  private clusters: Record<string, Cluster> = {};
   private lastTime: number = 0;
   private running: boolean = false;
+  public clusterManager: ClusterManager = new ClusterManager();
 
   constructor() {
     this.engine = Matter.Engine.create();
     this.start();
-  }
-
-  addCluster(cluster: Cluster) {
-    this.clusters[cluster.id] = cluster;
-  }
-
-  removeCluster(clusterId: string) {
-    delete this.clusters[clusterId];
   }
 
   start() {
@@ -39,11 +32,9 @@ export default class GameCycle {
 
     Matter.Engine.update(this.engine, delta);
 
-    for (const cluster of Object.values(this.clusters)) {
-      cluster.update(delta);
-    }
+    this.clusterManager.update(delta);
 
-    setImmediate(() => this.loop());
+    setTimeout(() => this.loop(), 30);
   }
 
   getEngine() {
@@ -51,3 +42,4 @@ export default class GameCycle {
   }
 }
 
+export default new GameCycle();

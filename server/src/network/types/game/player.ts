@@ -1,9 +1,9 @@
 import { Vector2d } from "@core/types/vector-2d"
+import { GameObjectNetworkEmi } from "./game-object";
 
-export type PlayerNetworkEmi = {
-  position: Vector2d,
-  id: string,
-  name: string,
+export interface PlayerNetworkEmi extends GameObjectNetworkEmi {
+  name: string;
+  type: "player-entity"
 };
 
 

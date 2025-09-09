@@ -1,12 +1,14 @@
 import setupServer from "@network/setupServer";
 import { Server } from "socket.io";
-import AuthController from "./AuthController";
-import GameEventsController from "./GameEventsController";
+import AuthController from "@network/controllers/AuthController";
+import GameEventsController from "@network/controllers/GameEventsController";
+import GameStatusController from "@network/controllers/GameStatusController";
 
 class NetworkManager {
   private io: Server;
   authController: AuthController | null = null;
   gameEventsController: GameEventsController | null = null;
+  gameStatusController: GameStatusController | null = null;
 
   constructor() {
     const { io } = setupServer();
@@ -18,6 +20,7 @@ class NetworkManager {
   private setupListeners() {
     this.authController = new AuthController();
     this.gameEventsController = new GameEventsController();
+    this.gameStatusController = new GameStatusController();
 
     this.io.on("connection", (socket) => {
       console.log(`client connected: ${socket.id}`);

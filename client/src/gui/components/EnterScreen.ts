@@ -1,5 +1,7 @@
 import GuiComponent from "@core/guiComponent";
+import GameCycle from "@game/managers/main/GameCycle";
 import GuiManager from "@gui/GuiManager";
+import NetworkManager from "@network/managers/NetworkManager";
 
 class EnterScreen extends GuiComponent {
   constructor() {
@@ -10,7 +12,12 @@ class EnterScreen extends GuiComponent {
   }
 
   enterGame() {
-    GuiManager.changeTo("game-screen");
+    NetworkManager.gameStatusController?.changeGameStatus({ type: "connect" });
+    // GuiManager.changeTo("game-screen");
+    //
+    window.addEventListener("DOMContentLoaded", () => {
+      GameCycle.setup();
+    });
   }
 }
 
