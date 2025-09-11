@@ -1,9 +1,9 @@
-                              ┌─────────────┐
-                              │   BASE      │
-                              └─────────────┘
-   Fotern(light)  Glion(bind)  Veyron(motion)  Zeron(balance)  Higron(mass)  Graven(gravity)
-       │            │             │              │               │               │
-       └────────────┴─────────────┴──────────────┴───────────────┴───────────────┘
+                        ┌─────────────┐
+                        │   BASE      │
+                        └─────────────┘
+Fotern(light)  Glion(bind)  Veyron(motion)  Zeron(balance)  Higron(mass)  Graven(gravity)
+    │            │             │              │               │               │
+    └────────────┴─────────────┴──────────────┴───────────────┴───────────────┘
                                 ▼
                      ┌─────────────────────┐
                      │   SYNTHESIZER  I    │  (combines 2 base)

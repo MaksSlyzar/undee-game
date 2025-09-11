@@ -1,6 +1,6 @@
 import Controller from "@core/controller";
 import GuiManager from "@gui/GuiManager";
-import { NetworkLoginStatusTypeRecv, NetworkLoginTypeEmi } from "@network/types/auth/auth";
+import { LoginStatusServer, LoginClient } from "@shared/network/types/auth/auth";
 
 class AuthController extends Controller {
   private authenticated: boolean = false;
@@ -8,23 +8,27 @@ class AuthController extends Controller {
   constructor() {
     super("auth");
 
-    this.setupRecv("login-status", (data: NetworkLoginStatusTypeRecv) => this.authStatus(data));
+    this.setupRecv(
+      "login-status",
+      (data: LoginStatusServer) => this.authStatus(data)
+    );
   }
 
   public getIsAuth() {
     return this.authenticated;
   }
 
-  authStatus(data: NetworkLoginStatusTypeRecv) {
-    if (data.connected == true) {
+  private authStatus(data: LoginStatusServer) {
+    if (data.connected) {
       this.authenticated = true;
       GuiManager.changeTo("enter-screen");
     }
   }
 
-  login(data: NetworkLoginTypeEmi) {
+  public login(data: LoginClient) {
     this.emit("login", data);
   }
 }
 
 export default AuthController;
+

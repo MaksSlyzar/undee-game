@@ -1,9 +1,9 @@
 import Controller from "@core/controller";
 import { Logger } from "@core/logger";
 import GameCycle from "@game/managers/main/GameCycle";
-import { InitNetworkEmi } from "@network/types/game/init";
-import { MovementNetworkRecv } from "@network/types/game/movement";
-import { UpdateNetworkEmi } from "@network/types/game/update";
+import { InitServer } from "@shared/network/types/game/init";
+import { MovementClient } from "@shared/network/types/game/movement";
+import { UpdateServer } from "@shared/network/types/game/update";
 import { Socket } from "socket.io";
 
 class GameEventsController extends Controller {
@@ -14,25 +14,25 @@ class GameEventsController extends Controller {
     this.logger = new Logger("GameEventsController");
   }
 
-  update(socket: Socket, data: UpdateNetworkEmi) {
-    this.emit<UpdateNetworkEmi>(socket, "update", data);
+  update(socket: Socket, data: UpdateServer) {
+    this.emit<UpdateServer>(socket, "update", data);
   }
 
-  init(socket: Socket, data: InitNetworkEmi) {
-    this.emit<InitNetworkEmi>(socket, "init", data);
+  init(socket: Socket, data: InitServer) {
+    this.emit<InitServer>(socket, "init", data);
   }
 
-  movement(socket: Socket, data: MovementNetworkRecv) {
+  movement(socket: Socket, data: MovementClient) {
     this.logger.info(`x:${data.position.x}, y:${data.position.y}`);
 
     const player = GameCycle.clusterManager.getPlayerBySocketId(socket.id);
     if (player && player.playerEntity) {
-      player.playerEntity.networkRecv(data);
+      player.playerEntity.networkClient(data);
     }
   }
 
   subscribe(socket: Socket) {
-    this.setupRecv<MovementNetworkRecv>(socket, "movement", (socket, data) => this.movement(socket, data));
+    this.setupRecv<MovementClient>(socket, "movement", (socket, data) => this.movement(socket, data));
   }
 }
 

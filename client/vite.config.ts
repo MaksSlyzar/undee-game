@@ -11,7 +11,8 @@ export default defineConfig({
       "@game": path.resolve(__dirname, "src/game"),
       "@game-objects": path.resolve(__dirname, "src/game/game-objects"),
       "@gui": path.resolve(__dirname, "src/gui"),
-      "@hud": path.resolve(__dirname, "src/hud")
+      "@hud": path.resolve(__dirname, "src/hud"),
+      "@shared": path.resolve(__dirname, "../shared") // <-- add this
     }
   },
   build: {

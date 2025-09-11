@@ -1,11 +1,12 @@
 import GameObject from "@core/game-object";
 import { generateId } from "@core/generateId";
 import Player from "./player";
-import { InitNetworkEmi } from "@network/types/game/init";
+import { InitServer } from "@shared/network/types/game/init";
 import NetworkManager from "@network/managers/NetworkManager";
 import PlayerEntity from "@game/game-objects/PlayerEntity";
-import { UpdateNetworkEmi } from "@network/types/game/update";
-import GameEventsController from "@network/controllers/GameEventsController";
+import { UpdateServer } from "@shared/network/types/game/update";
+import ClassicSword from "@game/game-objects/items/weapons/classic-sword";
+import { Socket } from "socket.io";
 
 export default class Cluster {
   id: string;
@@ -20,35 +21,45 @@ export default class Cluster {
 
   addPlayer(player: Player) {
     const entity = new PlayerEntity(player);
+    entity.inventory.addItemToInventory(new ClassicSword());
     this.entities[entity.id] = entity;
     player.playerEntity = entity;
-    NetworkManager.gameEventsController?.init(player.socket, this.initNetwork(player));
+
+    NetworkManager.gameEventsController?.init(
+      player.socket,
+      this.initNetwork(player)
+    );
+
     entity.start(this);
   }
 
-  initNetwork(player: Player): InitNetworkEmi {
+  initNetwork(player: Player): InitServer {
     const playerEntityId = player.playerEntity?.id;
     return {
-      cluster: {
-        entities: [],
-        id: this.id,
-        map: null
-      },
-      playerId: playerEntityId ? playerEntityId : "0000"
-    }
+      playerId: playerEntityId ?? "0000",
+    };
   }
 
-  updateNetwork(): UpdateNetworkEmi {
-    const entitiesData = [];
-    for (let entityId in this.entities) {
-      entitiesData.push(this.entities[entityId].networkUpdate());
+  updateNetwork(socketId: string): UpdateServer {
+    const entitiesData = Object.values(this.entities).map(entity =>
+      entity.networkUpdate()
+    );
+
+    let playerData = null;
+    for (const playerId in this.players) {
+      const player = this.players[playerId];
+      if (player.socket.id === socketId && player.playerEntity) {
+        playerData = player.playerEntity.networkUpdate(true);
+      }
     }
+
     return {
       cluster: {
         entities: entitiesData,
-        id: this.id
-      }
-    }
+        id: this.id,
+        playerEntity: playerData,
+      },
+    };
   }
 
   addEntity(entity: GameObject<any>) {
@@ -64,15 +75,12 @@ export default class Cluster {
   }
 
   update(delta: number): void {
-    for (let entityId in this.entities) {
-      const entity = this.entities[entityId];
-
+    for (const entity of Object.values(this.entities)) {
       entity.update(delta);
     }
 
-    const updateData = this.updateNetwork();
-    for (let playerId in this.players) {
-      const player = this.players[playerId];
+    for (const player of Object.values(this.players)) {
+      const updateData = this.updateNetwork(player.socket.id);
       NetworkManager.gameEventsController?.update(player.socket, updateData);
     }
   }

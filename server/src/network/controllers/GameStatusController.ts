@@ -1,9 +1,9 @@
-import Controller from "@core/controller"
+import Controller from "@core/controller";
 import { Logger } from "@core/logger";
 import Player from "@core/player";
 import GameCycle from "@game/managers/main/GameCycle";
 import NetworkManager from "@network/managers/NetworkManager";
-import { GameStatusRecv } from "@network/types/game/game-status";
+import { GameStatusClient, GameStatusServer } from "@shared/network/types/game/game-status";
 import { Socket } from "socket.io";
 
 export default class GameStatusController extends Controller {
@@ -14,8 +14,8 @@ export default class GameStatusController extends Controller {
     this.logger = new Logger("GameStatusController");
   }
 
-  private changeGameStatusRecv(socket: Socket, data: GameStatusRecv) {
-    if (data.type == "connect") {
+  private changeGameStatusClient(socket: Socket, data: GameStatusClient) {
+    if (data.type === "connect") {
       const clusters = GameCycle.clusterManager.getAllClusters();
       console.log(clusters);
       if (clusters.length >= 1) {
@@ -27,6 +27,11 @@ export default class GameStatusController extends Controller {
   }
 
   subscribe(socket: Socket) {
-    this.setupRecv<GameStatusRecv>(socket, "change-game-status", (socket: Socket, data) => this.changeGameStatusRecv(socket, data));
+    this.setupRecv<GameStatusClient>(
+      socket,
+      "change-game-status",
+      (socket: Socket, data) => this.changeGameStatusClient(socket, data)
+    );
   }
 }
+

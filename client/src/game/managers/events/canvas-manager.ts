@@ -6,7 +6,7 @@ export default class CanvasManager {
   private mouseClickCallbacks: MouseCallback[] = [];
 
   constructor(private element: HTMLElement | Window = window) {
-    this.element.addEventListener("keydown", this.onKeyDown);
+    window.addEventListener("keydown", this.onKeyDown);
     this.element.addEventListener("click", this.onMouseClick);
   }
 

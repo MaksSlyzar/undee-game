@@ -6,3 +6,4 @@ GameCycle.setup();
 NetworkManager.on("connect", () => {
   GuiManager.setup();
 })
+

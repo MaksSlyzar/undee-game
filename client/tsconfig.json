@@ -3,19 +3,20 @@
     "target": "ESNext",
     "module": "ESNext",
     "moduleResolution": "Node",
-    "baseUrl": "./src",
+    "baseUrl": ".",
     "paths": {
-      "@core/*": ["core/*"],
-      "@network/*": ["network/*"],
-      "@game/*": ["game/*"],
-      "@game-objects/*": ["game/game-objects/*"],
-      "@gui/*": ["gui/*"],
-      "@hud/*": ["hud/*"]
+      "@core/*": ["src/core/*"],
+      "@network/*": ["src/network/*"],
+      "@game/*": ["src/game/*"],
+      "@game-objects/*": ["src/game/game-objects/*"],
+      "@gui/*": ["src/gui/*"],
+      "@hud/*": ["src/hud/*"],
+      "@shared/*": ["../shared/*"]
     },
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true
   },
-  "include": ["src"]
+  "include": ["src", "../shared"]
 }
 

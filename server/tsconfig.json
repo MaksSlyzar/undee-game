@@ -2,23 +2,22 @@
   "compilerOptions": {
     "target": "ESNext",
     "module": "CommonJS",
-    "rootDir": "./src",
+    "rootDirs": ["./src", "../shared"],
     "outDir": "./dist",
     "esModuleInterop": true,
     "strict": true,
     "skipLibCheck": true,
-    "baseUrl": "./src",
+    "baseUrl": ".",
     "paths": {
-      "@network/*": ["network/*"],
-      "@game/*": ["game/*"],
-      "@game-objects/*": ["game/game-objects/*"],
-      "@managers/*": ["game/managers/*"],
-      "@cluster/*": ["game/managers/cluster/*"],
-      "@core/*": ["core/*"]
+      "@network/*": ["src/network/*"],
+      "@game/*": ["src/game/*"],
+      "@game-objects/*": ["src/game/game-objects/*"],
+      "@managers/*": ["src/game/managers/*"],
+      "@cluster/*": ["src/game/managers/cluster/*"],
+      "@core/*": ["src/core/*"],
+      "@shared/*": ["../shared/*"]
     }
   },
-  "rootDir": "./src",
-  "outDir": "./dist",
-  "include": ["src"]
+  "include": ["src", "../shared"]
 }
 

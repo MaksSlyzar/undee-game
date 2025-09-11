@@ -3,22 +3,25 @@ import GameObject from "@core/game-object";
 import { generateId } from "@core/generateId";
 import Player from "@core/player";
 import GameCycle from "@game/managers/main/GameCycle";
-import { MovementNetworkRecv } from "@network/types/game/movement";
-import { PlayerUpdateNetworkEmi } from "@network/types/game/player";
+import { MovementClient } from "@shared/network/types/game/movement";
+import { PlayerUpdateServer } from "@shared/network/types/game/player";
 
 import { Bodies, Body, Vector, World } from "matter-js";
+import PlayerInventory from "./inventory/player-inventory";
 
-class PlayerEntity extends GameObject<PlayerUpdateNetworkEmi> {
+class PlayerEntity extends GameObject<PlayerUpdateServer> {
   player: Player;
   hp: number = 100;
   hpMax: number = 100;
   body: Body;
   activity: "move" | "attack" | "idle" = "idle";
+  inventory: PlayerInventory;
 
   private targetPos: Vector | null = null;
 
   constructor(player: Player) {
     super(generateId());
+    this.inventory = new PlayerInventory();
     this.player = player;
 
     this.body = Bodies.circle(100, 200, 16, {
@@ -29,9 +32,6 @@ class PlayerEntity extends GameObject<PlayerUpdateNetworkEmi> {
   }
 
   start(cluster: Cluster): void {
-    // add the body to Matter world (if GameCycle or physics manager exists)
-    // Example:
-    // Matter.World.add(GameCycle.physicsWorld, this.body);
     World.add(GameCycle.getEngine().world, this.body);
   }
 
@@ -59,8 +59,7 @@ class PlayerEntity extends GameObject<PlayerUpdateNetworkEmi> {
     }
   }
 
-
-  networkUpdate(): PlayerUpdateNetworkEmi {
+  networkUpdate(isOwn: boolean = false): PlayerUpdateServer {
     return {
       id: this.id,
       name: "undefined",
@@ -69,11 +68,12 @@ class PlayerEntity extends GameObject<PlayerUpdateNetworkEmi> {
       hp: this.hp,
       hpMax: this.hpMax,
       angle: this.body.angle,
-      activity: this.activity
+      activity: this.activity,
+      inventory: isOwn ? this.inventory.network() : null,
     };
   }
 
-  networkRecv(data: MovementNetworkRecv) {
+  networkClient(data: MovementClient) {
     this.targetPos = { x: data.position.x, y: data.position.y };
   }
 }

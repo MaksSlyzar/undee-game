@@ -1,6 +1,6 @@
 import { Container, Graphics, Point } from "pixi.js";
 import GameObject from "@core/game-object";
-import { PlayerEntityNetworkRecv } from "@network/types/game/game-object";
+import { PlayerEntityServer } from "@shared/network/types/game/player";
 import { PlayerUI } from "@hud/player-ui";
 import GameCycle from "@game/managers/main/GameCycle";
 import NetworkManager from "@network/managers/NetworkManager";
@@ -8,10 +8,12 @@ import { lerp } from "@core/lerp";
 import PlayerEntityHand from "./player-entity/hand";
 import lerpAngle from "@core/lerp-angle";
 import PlayerAnimation from "./player-entity/player-animation";
+import Sword from "./player-entity/hand-items/sword";
+import { ItemBase } from "@core/types/items";
+import Empty from "./player-entity/hand-items/empty";
 
 export default class PlayerEntity extends GameObject {
   private graphics: Graphics;
-  private shadow: Graphics;
   playerUi: PlayerUI;
   targetX: number = 0;
   targetY: number = 0;
@@ -20,6 +22,7 @@ export default class PlayerEntity extends GameObject {
   targetRotation: number = 0;
   animation: PlayerAnimation;
   activity: "move" | "attack" | "idle" = "idle";
+  activeSlot: ItemBase = new Empty();
 
   constructor(id: string, x: number = 0, y: number = 0) {
     super(id, x, y);
@@ -30,7 +33,7 @@ export default class PlayerEntity extends GameObject {
 
     this.graphics = new Graphics();
     this.graphics.beginFill(0x00ff00);
-    this.graphics.drawCircle(0, 0, 16);
+    this.graphics.drawCircle(0, 0, 14);
     this.graphics.endFill();
     this.addChild(this.graphics);
 
@@ -39,6 +42,9 @@ export default class PlayerEntity extends GameObject {
     this.addChild(this.leftHand);
     this.addChild(this.rightHand);
 
+    const sword = new Sword(30, 5, 0x999999);
+    this.leftHand.addChild(sword);
+
     this.leftHand.zIndex = -1;
     this.rightHand.zIndex = -1;
 
@@ -46,15 +52,30 @@ export default class PlayerEntity extends GameObject {
 
     const canvasManager = GameCycle.canvasManager;
     if (canvasManager) {
+
+      canvasManager.onKeyDownAdd((evt) => {
+        if (evt.key == "i") {
+          GameCycle.inventoryUI?.toggle();
+        }
+      });
+
       canvasManager.onMouseClickAdd((event) => {
         const canvasBounds = GameCycle.pixiApplication!.view.getBoundingClientRect();
         const mouseX = event.clientX - canvasBounds.left;
         const mouseY = event.clientY - canvasBounds.top;
         const point = new Point(mouseX, mouseY);
         const worldPos = GameCycle.gameContainer.toLocal(point);
+        GameCycle.targetPointer.follow(worldPos.x, worldPos.y);
         NetworkManager.gameEventsController?.movement({ position: { x: worldPos.x, y: worldPos.y } });
       });
     }
+  }
+
+  holdItem(item: ItemBase) {
+    if (item.id == this.activeSlot.id)
+      return;
+
+    this.activeSlot = item;
   }
 
   update(delta: number): void {
@@ -65,7 +86,7 @@ export default class PlayerEntity extends GameObject {
     this.animation.update(delta);
   }
 
-  updateNetworkRecv(data: PlayerEntityNetworkRecv) {
+  updateNetworkServer(data: PlayerEntityServer) {
     this.targetX = data.position.x;
     this.targetY = data.position.y;
     this.targetRotation = data.angle;

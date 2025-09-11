@@ -1,6 +1,6 @@
 import Controller from "@core/controller";
 import { Logger } from "@core/logger";
-import { NetworkLoginStatusTypeEmi, NetworkLoginTypeRecv } from "@network/types/auth/auth";
+import { LoginClient, LoginStatusServer } from "@shared/network/types/auth/auth";
 import { Socket } from "socket.io";
 import NetworkManager from "@network/managers/NetworkManager";
 
@@ -16,14 +16,14 @@ class AuthController extends Controller {
 
   }
 
-  login(socket: Socket, data: NetworkLoginTypeRecv) {
-    this.emit<NetworkLoginStatusTypeEmi>(socket, "login-status", { "message": "successfully", connected: true });
+  login(socket: Socket, data: LoginClient) {
+    this.emit<LoginStatusServer>(socket, "login-status", { "message": "successfully", connected: true });
     NetworkManager.gameStatusController?.subscribe(socket);
 
   }
 
   subscribe(socket: Socket) {
-    this.setupRecv<NetworkLoginTypeRecv>(socket, "login", (socket: Socket, data) => this.login(socket, data));
+    this.setupRecv<LoginClient>(socket, "login", (socket: Socket, data) => this.login(socket, data));
   }
 }
 
