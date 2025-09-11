@@ -8,7 +8,6 @@ import { PlayerUpdateServer } from "@shared/network/types/game/player";
 
 import { Bodies, Body, Vector, World } from "matter-js";
 import PlayerInventory from "./inventory/player-inventory";
-import EmptyItem from "./items/empty-item";
 import { ItemBase } from "@core/items/items";
 import ClassicSword from "./items/weapons/classic-sword";
 
@@ -20,7 +19,7 @@ class PlayerEntity extends GameObject<PlayerUpdateServer> {
   activity: "move" | "attack" | "idle" = "idle";
   inventory: PlayerInventory;
   activeItemIndex: number = 0;
-  activeItem: ItemBase;
+  activeItem: ItemBase | null;
 
   private targetPos: Vector | null = null;
 
@@ -35,10 +34,9 @@ class PlayerEntity extends GameObject<PlayerUpdateServer> {
       frictionAir: 0.05,
     });
 
-    this.activeItem = new EmptyItem(this);
+    this.activeItem = null;
 
     this.inventory.addItemToInventory(new ClassicSword(this));
-
     this.syncItemInventory(0);
   }
 
@@ -47,7 +45,9 @@ class PlayerEntity extends GameObject<PlayerUpdateServer> {
   }
 
   update(delta: number): void {
-    this.activeItem.update();
+    if (this.activeItem)
+      this.activeItem.update();
+
     if (this.targetPos) {
       const speed = 2;
       this.activity = "move";
@@ -83,7 +83,7 @@ class PlayerEntity extends GameObject<PlayerUpdateServer> {
       activity: this.activity,
       inventory: isOwn ? this.inventory.network() : null,
       hands: {
-        activeSlotItem: this.activeItem.network(),
+        activeSlotItem: this.activeItem ? this.activeItem.network() : null,
         activeItemIndex: this.activeItemIndex
       }
     };
