@@ -1,8 +1,8 @@
-import { ItemServer } from "./item/item";
+import { ItemBaseServer, ItemServer } from "./item/item";
 
 export type InventoryServer = {
   activeSlotIndex: number;
   token: string;
-  itemsArray: Array<null | ItemServer>;
+  itemsArray: Array<ItemBaseServer>;
 };
 

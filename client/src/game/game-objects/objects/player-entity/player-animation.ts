@@ -22,6 +22,11 @@ export default class PlayerAnimation {
     this.currentAnimation = animation;
   }
 
+  private toFirstPosition() {
+    this.player.leftHand.backPosition();
+    this.player.rightHand.backPosition();
+  }
+
   private stay: AnimationFunction = () => {
     if (!this.player.leftHand || !this.player.rightHand) return;
     this.player.leftHand.x = 0;
@@ -37,15 +42,40 @@ export default class PlayerAnimation {
     this.player.rightHand.x = offset;
   };
 
+
   private attack: AnimationFunction = (delta) => {
-    if (!this.player.leftHand || !this.player.rightHand) return;
-    const speed = 0.2;
-    const amplitude = 10;
-    const leftOffset = Math.sin(this.phase * speed * Math.PI) * amplitude;
-    const rightOffset = Math.sin(this.phase * speed * Math.PI / 2) * (amplitude / 2);
-    this.player.leftHand.x = -leftOffset;
-    this.player.rightHand.x = rightOffset;
-    if (this.phase * speed > Math.PI * 2) this.setAnimation(this.stay);
+    if (!this.player.leftHand || !this.player.rightHand || !this.player.activeSlot) return;
+
+    const radius = 12;
+    const duration = 0.6;
+    const progress = Math.min(this.phase / 60 / duration, 1);
+
+    const startAngle = -Math.PI / 4;
+    const endAngle = Math.PI / 4;
+
+    // Розрахунок кута правої руки
+    let angle: number;
+    if (progress <= 0.5) {
+      const p = progress / 0.5;
+      angle = startAngle + (endAngle - startAngle) * p;
+    } else {
+      const p = (progress - 0.5) / 0.15;
+      angle = endAngle + (startAngle - endAngle) * p;
+    }
+
+    this.player.rightHand.x = radius * Math.cos(angle);
+    this.player.rightHand.y = -radius * Math.sin(angle);
+
+    const leftRadius = radius;
+    this.player.leftHand.x = -leftRadius * Math.cos(angle * 0.8);
+    // this.player.leftHand.y = -leftRadius * Math.sin(angle * 0.8);
+
+    this.player.activeSlot.rotation = -angle - Math.PI / 2;
+
+    if (progress >= 1) {
+      this.player.activeSlot.rotation = 0;
+      this.toFirstPosition();
+    }
   };
 
   public playAttack() {

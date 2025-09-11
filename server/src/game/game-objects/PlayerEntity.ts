@@ -8,6 +8,9 @@ import { PlayerUpdateServer } from "@shared/network/types/game/player";
 
 import { Bodies, Body, Vector, World } from "matter-js";
 import PlayerInventory from "./inventory/player-inventory";
+import EmptyItem from "./items/empty-item";
+import { ItemBase } from "@core/items/items";
+import ClassicSword from "./items/weapons/classic-sword";
 
 class PlayerEntity extends GameObject<PlayerUpdateServer> {
   player: Player;
@@ -16,12 +19,14 @@ class PlayerEntity extends GameObject<PlayerUpdateServer> {
   body: Body;
   activity: "move" | "attack" | "idle" = "idle";
   inventory: PlayerInventory;
+  activeItemIndex: number = 0;
+  activeItem: ItemBase;
 
   private targetPos: Vector | null = null;
 
   constructor(player: Player) {
     super(generateId());
-    this.inventory = new PlayerInventory();
+    this.inventory = new PlayerInventory(this);
     this.player = player;
 
     this.body = Bodies.circle(100, 200, 16, {
@@ -29,6 +34,12 @@ class PlayerEntity extends GameObject<PlayerUpdateServer> {
       friction: 0.1,
       frictionAir: 0.05,
     });
+
+    this.activeItem = new EmptyItem(this);
+
+    this.inventory.addItemToInventory(new ClassicSword(this));
+
+    this.syncItemInventory(0);
   }
 
   start(cluster: Cluster): void {
@@ -36,6 +47,7 @@ class PlayerEntity extends GameObject<PlayerUpdateServer> {
   }
 
   update(delta: number): void {
+    this.activeItem.update();
     if (this.targetPos) {
       const speed = 2;
       this.activity = "move";
@@ -70,11 +82,34 @@ class PlayerEntity extends GameObject<PlayerUpdateServer> {
       angle: this.body.angle,
       activity: this.activity,
       inventory: isOwn ? this.inventory.network() : null,
+      hands: {
+        activeSlotItem: this.activeItem.network(),
+        activeItemIndex: this.activeItemIndex
+      }
     };
   }
 
+  syncItemInventory(itemIndex: number) {
+    const activeItem = this.inventory.getItemByIndex(itemIndex);
+    if (activeItem) {
+      this.activeItemIndex = itemIndex;
+      this.activeItem = activeItem;
+    }
+  }
+
   networkClient(data: MovementClient) {
-    this.targetPos = { x: data.position.x, y: data.position.y };
+    if (data.position)
+      this.targetPos = { x: data.position.x, y: data.position.y };
+
+    if (data.selectItemIndex !== undefined) {
+      if (this.activeItemIndex != data.selectItemIndex) {
+        this.syncItemInventory(data.selectItemIndex);
+      }
+    }
+
+    if (data.useItem) {
+      this.activeItem.networkClient(data.useItem);
+    }
   }
 }
 

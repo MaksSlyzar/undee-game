@@ -11,6 +11,7 @@ import PlayerAnimation from "./player-entity/player-animation";
 import Sword from "./player-entity/hand-items/sword";
 import { ItemBase } from "@core/types/items";
 import Empty from "./player-entity/hand-items/empty";
+import { syncItem } from "@network/sync/sync-inventory";
 
 export default class PlayerEntity extends GameObject {
   private graphics: Graphics;
@@ -42,9 +43,6 @@ export default class PlayerEntity extends GameObject {
     this.addChild(this.leftHand);
     this.addChild(this.rightHand);
 
-    const sword = new Sword(30, 5, 0x999999);
-    this.leftHand.addChild(sword);
-
     this.leftHand.zIndex = -1;
     this.rightHand.zIndex = -1;
 
@@ -56,6 +54,14 @@ export default class PlayerEntity extends GameObject {
       canvasManager.onKeyDownAdd((evt) => {
         if (evt.key == "i") {
           GameCycle.inventoryUI?.toggle();
+        }
+
+        if (evt.key == "1" || evt.key == "2") {
+          NetworkManager.gameEventsController?.movement({ selectItemIndex: Number(evt.key) - 1 });
+        }
+
+        if (evt.key == "q") {
+          NetworkManager.gameEventsController?.movement({ useItem: { itemAbility: 0 } });
         }
       });
 
@@ -105,6 +111,15 @@ export default class PlayerEntity extends GameObject {
           this.animation.playAttack();
           break;
       }
+    }
+
+    if (this.activeSlot.id == data.hands.activeSlotItem.id) {
+      //just update network of item
+    } else {
+      this.rightHand.removeChild(this.activeSlot);
+
+      this.activeSlot = syncItem(data.hands.activeSlotItem);
+      this.rightHand.addChild(this.activeSlot);
     }
   }
 }

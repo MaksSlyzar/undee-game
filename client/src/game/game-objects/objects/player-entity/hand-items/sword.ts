@@ -5,6 +5,7 @@ export default class Sword extends Container {
   accent: Graphics;
   shadow: Graphics;
   hilt: Graphics;
+  handle: Graphics; // нова рукоятка
 
   id = "classic-sword";
 
@@ -49,10 +50,22 @@ export default class Sword extends Container {
     this.hilt.endFill();
     this.addChild(this.hilt);
 
+    // Handle / рукоятка
+    this.handle = new Graphics();
+    const handleLength = width * 3; // довжина рукоятки
+    this.handle.beginFill(0x333333);
+    this.handle.drawRect(-handleLength, -width / 4, handleLength, width / 2);
+    this.handle.endFill();
+    this.addChild(this.handle);
+
+    // Півоти
     this.blade.pivot.set(0, 0);
     this.accent.pivot.set(0, 0);
     this.shadow.pivot.set(0, 0);
     this.hilt.pivot.set(0, 0);
+    this.handle.pivot.set(0, 0);
+
+    this.pivot.set(0, 0);
   }
 }
 

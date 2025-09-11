@@ -21,7 +21,6 @@ export default class Cluster {
 
   addPlayer(player: Player) {
     const entity = new PlayerEntity(player);
-    entity.inventory.addItemToInventory(new ClassicSword());
     this.entities[entity.id] = entity;
     player.playerEntity = entity;
 

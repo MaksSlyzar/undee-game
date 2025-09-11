@@ -1,5 +1,6 @@
 import Controller from "@core/controller";
 import { Logger } from "@core/logger";
+import ClassicSword from "@game/game-objects/items/weapons/classic-sword";
 import GameCycle from "@game/managers/main/GameCycle";
 import { InitServer } from "@shared/network/types/game/init";
 import { MovementClient } from "@shared/network/types/game/movement";
@@ -23,7 +24,7 @@ class GameEventsController extends Controller {
   }
 
   movement(socket: Socket, data: MovementClient) {
-    this.logger.info(`x:${data.position.x}, y:${data.position.y}`);
+    // this.logger.info(`x:${data.position.x}, y:${data.position.y}`);
 
     const player = GameCycle.clusterManager.getPlayerBySocketId(socket.id);
     if (player && player.playerEntity) {

@@ -1,5 +1,6 @@
 import { GameObjectServer } from "./game-object";
 import { InventoryServer } from "./inventory";
+import { ItemBaseServer } from "./item/item";
 
 export interface PlayerEntityServer extends GameObjectServer {
   name: string;
@@ -9,7 +10,10 @@ export interface PlayerEntityServer extends GameObjectServer {
   angle: number;
   activity: "move" | "attack" | "idle";
   inventory: InventoryServer | null;
-  // activeSlotItem: ItemServerBase
+  hands: {
+    activeSlotItem: ItemBaseServer;
+    activeItemIndex: number;
+  };
 }
 
 export interface PlayerUpdateServer extends PlayerEntityServer { }

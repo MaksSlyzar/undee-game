@@ -20,7 +20,7 @@ class GameCycle {
   inventoryUI: InventoryUI | null = null;
 
   setupGameObjects() {
-    this.inventoryUI = new InventoryUI({ cols: 4, padding: 16, rows: 4, slotSize: 48 });
+    this.inventoryUI = new InventoryUI({ cols: 8, padding: 16, rows: 1, slotSize: 48 });
     this.map = new TileMap(100, 100, 32);
     this.gameContainer.addChild(this.map);
 

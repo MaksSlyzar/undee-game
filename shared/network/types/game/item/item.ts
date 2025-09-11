@@ -6,5 +6,12 @@ export type ItemServer = {
   amount: number;
 };
 
-export type ItemBaseServer = ClassicSwordServer | ClassicBowServer;
+
+export interface EmptyItemServer extends ItemServer {
+  id: "empty";
+  name: "Void";
+  amount: number;
+}
+
+export type ItemBaseServer = ClassicSwordServer | ClassicBowServer | EmptyItemServer;
 
